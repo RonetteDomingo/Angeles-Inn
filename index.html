@@ -4,179 +4,367 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Angeles Inn | Owner Bed-Space Tracker</title>
-  <script src="https://tailwindcss.com"></script>
-  <script src="https://unpkg.com"></script>
-  <link rel="stylesheet" href="styles.css" />
   <script>
     if (!sessionStorage.getItem('angeles_owner')) {
       window.location.replace('login.html');
     }
   </script>
-</head>
-<body class="min-h-screen antialiased pb-16">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #F4F4F5;
+      color: #18181B;
+      line-height: 1.45;
+      padding-bottom: 60px;
+    }
 
-  <!-- Top Owner Navbar -->
-  <nav class="sticky top-0 z-40 glass-nav border-b border-zinc-200/80">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-xl bg-zinc-900 text-white flex items-center justify-center">
-          <i data-lucide="bed-double" class="w-4 h-4"></i>
-        </div>
-        <div>
-          <span class="font-bold text-base sm:text-lg tracking-tight block leading-none">Angeles Inn</span>
-          <span class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Owner Bed-Space Board</span>
-        </div>
-      </div>
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E4E4E7;
+      padding: 14px 20px;
+    }
+    .nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: #18181B; color: #FFF;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px;
+    }
+    .brand-title { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+    .brand-sub { font-size: 11px; color: #71717A; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .btn-lock {
+      background: #F4F4F5; color: #3F3F46;
+      border: 1px solid #E4E4E7;
+      padding: 8px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .btn-lock:hover { background: #E4E4E7; color: #18181B; }
 
-      <button
-        id="logout-btn"
-        class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200/70 transition cursor-pointer"
-      >
-        <i data-lucide="log-out" class="w-4 h-4"></i>
-        <span>Lock Portal</span>
-      </button>
-    </div>
-  </nav>
+    /* Main Container */
+    .container { max-width: 1280px; margin: 0 auto; padding: 24px 16px; }
 
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 space-y-6 fade-in">
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .stat-card {
+      background: #FFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .stat-card.green { background: #ECFDF5; border-color: #A7F3D0; }
+    .stat-card.amber { background: #FFFBEB; border-color: #FDE68A; }
+    .stat-label { font-size: 12px; font-weight: 600; color: #71717A; }
+    .stat-card.green .stat-label { color: #065F46; }
+    .stat-card.amber .stat-label { color: #92400E; }
+    .stat-value { font-size: 26px; font-weight: 800; margin-top: 2px; letter-spacing: -0.02em; }
+    .stat-card.green .stat-value { color: #047857; }
+    .stat-card.amber .stat-value { color: #B45309; }
+    .stat-sub { font-size: 11px; color: #71717A; }
 
-    <!-- Live Capacity & Expiration Summary Cards -->
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-zinc-200/80">
-        <span class="text-xs font-medium text-zinc-500">Total Capacity</span>
-        <div class="mt-1 flex items-baseline gap-2">
-          <span class="text-2xl sm:text-3xl font-bold">24</span>
-          <span class="text-xs text-zinc-400">bunks (3 rooms)</span>
-        </div>
-      </div>
+    /* Toolbar */
+    .toolbar {
+      background: #FFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      border: 1px solid #E4E4E7;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #FAFAFA;
+    }
+    .search-input:focus { outline: none; border-color: #18181B; background: #FFF; }
+    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 8px 13px;
+      border-radius: 10px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #F4F4F5;
+      color: #3F3F46;
+    }
+    .filter-btn.active { background: #18181B; color: #FFF; }
 
-      <div class="bg-emerald-50/80 p-4 sm:p-5 rounded-2xl border border-emerald-200/80">
-        <span class="text-xs font-semibold text-emerald-800">Available Beds</span>
-        <div class="mt-1 flex items-baseline gap-2">
-          <span id="stat-vacant" class="text-2xl sm:text-3xl font-bold text-emerald-700">24</span>
-          <span class="text-xs text-emerald-700">ready for rent</span>
-        </div>
-      </div>
+    /* 3 Rooms Grid */
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+    }
+    .room-card {
+      background: #FFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .room-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #F4F4F5;
+    }
+    .room-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: #F4F4F5;
+      color: #3F3F46;
+    }
+    .room-badge.male { background: #EFF6FF; color: #1D4ED8; }
+    .room-badge.female { background: #FFF1F2; color: #BE123C; }
+    .room-title { font-size: 18px; font-weight: 700; margin-top: 6px; }
+    .room-count { text-align: right; }
+    .room-count strong { font-size: 18px; color: #059669; display: block; }
+    .room-count span { font-size: 10px; text-transform: uppercase; color: #71717A; font-weight: 700; }
 
-      <div class="bg-white p-4 sm:p-5 rounded-2xl border border-zinc-200/80">
-        <span class="text-xs font-medium text-zinc-500">Occupied Beds</span>
-        <div class="mt-1 flex items-baseline gap-2">
-          <span id="stat-occupied" class="text-2xl sm:text-3xl font-bold text-zinc-900">0</span>
-          <span class="text-xs text-zinc-400">active tenants</span>
-        </div>
-      </div>
+    /* Double-Deck Bunk Bed Drawing Frame */
+    .decks-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .bunk-frame {
+      position: relative;
+      border-left: 5px solid #3F3F46;
+      border-right: 5px solid #3F3F46;
+      border-top: 4px solid #3F3F46;
+      border-radius: 10px 10px 2px 2px;
+      padding: 8px 8px 10px 8px;
+      background: #FAFAFA;
+    }
+    /* Bunk Bed Legs at Bottom */
+    .bunk-frame::before,
+    .bunk-frame::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      width: 5px;
+      height: 8px;
+      background: #3F3F46;
+    }
+    .bunk-frame::before { left: -5px; }
+    .bunk-frame::after { right: -5px; }
 
-      <div class="bg-amber-50/80 p-4 sm:p-5 rounded-2xl border border-amber-200/80">
-        <span class="text-xs font-semibold text-amber-800">Ending Soon / Overdue</span>
-        <div class="mt-1 flex items-baseline gap-2">
-          <span id="stat-expiring" class="text-2xl sm:text-3xl font-bold text-amber-700">0</span>
-          <span class="text-xs text-amber-700">within 3 days</span>
-        </div>
-      </div>
-    </section>
+    .bunk-frame-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      padding: 0 2px;
+    }
+    .bunk-frame-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #3F3F46;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-    <!-- Search & Filter Bar -->
-    <section class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between bg-white p-3.5 rounded-2xl border border-zinc-200/80">
-      <div class="relative flex-1">
-        <i data-lucide="search" class="w-4 h-4 text-zinc-400 absolute left-3.5 top-3"></i>
-        <input
-          type="text"
-          id="search-guest"
-          placeholder="Search tenant name..."
-          class="w-full pl-10 pr-4 py-2 rounded-xl bg-zinc-50 border border-zinc-200/80 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900"
-        />
-      </div>
+    /* Visual Ladder & Mattress Container */
+    .bunk-structure {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .bunk-ladder {
+      width: 18px;
+      flex-shrink: 0;
+      border-left: 2px solid #71717A;
+      border-right: 2px solid #71717A;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 4px 0;
+    }
+    .ladder-rung {
+      height: 2px;
+      background: #71717A;
+      width: 100%;
+    }
+    .bunk-tiers {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+    .bunk-divider {
+      height: 3px;
+      background: #52525B;
+      border-radius: 2px;
+    }
 
-      <div class="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
-        <button data-filter="all" class="filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-900 text-white cursor-pointer shrink-0">All Rooms</button>
-        <button data-filter="vacant" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 text-zinc-700 hover:bg-zinc-200 cursor-pointer shrink-0">Vacant Only</button>
-        <button data-filter="expiring" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-zinc-100 text-zinc-700 hover:bg-zinc-200 cursor-pointer shrink-0">Expiring / Overdue</button>
-      </div>
-    </section>
+    /* Individual Bed Mattress Slot */
+    .bed-slot {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1.5px solid #D4D4D8;
+      border-bottom: 4px solid #A1A1AA;
+      background: #FFF;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.15s;
+      display: block;
+    }
+    .bed-slot:hover { border-color: #18181B; }
+    .bed-slot.vacant {
+      background: #ECFDF5;
+      border-color: #6EE7B7;
+      border-bottom-color: #10B981;
+    }
+    .bed-slot.expiring {
+      background: #FFFBEB;
+      border-color: #FCD34D;
+      border-bottom-color: #F59E0B;
+    }
+    .bed-slot.expired {
+      background: #FEF2F2;
+      border-color: #FCA5A5;
+      border-bottom-color: #EF4444;
+    }
 
-    <!-- 3 Rooms Container (Rendered by app.js) -->
-    <section id="rooms-container" class="grid lg:grid-cols-3 gap-6"></section>
+    .bed-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .bed-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #3F3F46;
+    }
+    .status-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      background: #F4F4F5;
+      color: #3F3F46;
+    }
+    .bed-slot.vacant .status-pill { background: #D1FAE5; color: #065F46; }
+    .bed-slot.expiring .status-pill { background: #FEF3C7; color: #92400E; }
+    .bed-slot.expired .status-pill { background: #FEE2E2; color: #991B1B; }
 
-  </main>
+    /* Structured Info Rows Inside Each Bed */
+    .bed-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
+    }
+    .bed-row {
+      display: flex;
+      gap: 5px;
+      align-items: baseline;
+      overflow: hidden;
+    }
+    .bed-key {
+      font-weight: 700;
+      color: #71717A;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .bed-val {
+      font-weight: 600;
+      color: #18181B;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bed-val.remarks {
+      font-weight: 400;
+      color: #52525B;
+      font-style: italic;
+    }
+    .bed-vacant-cta {
+      font-size: 12px;
+      font-weight: 600;
+      color: #047857;
+      padding: 4px 0 2px 0;
+    }
 
-  <!-- Modal: Assign / Edit Guest in Bunk -->
-  <div id="bunk-modal" class="hidden fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 sm:p-7 space-y-5 shadow-2xl fade-in">
-      <div class="flex items-center justify-between border-b border-zinc-100 pb-4">
-        <div>
-          <span id="modal-room-label" class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Room</span>
-          <h3 id="modal-bunk-title" class="text-lg font-bold text-zinc-900">Bunk 1 - Upper</h3>
-        </div>
-        <button id="close-modal" class="p-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-600 cursor-pointer">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <form id="bunk-form" class="space-y-4">
-        <input type="hidden" id="modal-bed-id" />
-
-        <div class="space-y-1">
-          <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Guest / Tenant Full Name</label>
-          <input
-            type="text"
-            id="guest-name"
-            required
-            placeholder="e.g. Juan Dela Cruz"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900"
-          />
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Start Date</label>
-            <input
-              type="date"
-              id="start-date"
-              required
-              class="w-full px-3 py-2.5 rounded-xl border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900"
-            />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">End of Rent Date</label>
-            <input
-              type="date"
-              id="end-date"
-              required
-              class="w-full px-3 py-2.5 rounded-xl border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-zinc-900"
-            />
-          </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">Contact / Notes (Optional)</label>
-          <input
-            type="text"
-            id="guest-notes"
-            placeholder="0917-xxx-xxxx / Paid ₱2,500"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900"
-          />
-        </div>
-
-        <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
-          <button
-            type="submit"
-            class="flex-1 bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-3 rounded-xl text-sm transition cursor-pointer"
-          >
-            Save Guest to Bunk
-          </button>
-          <button
-            type="button"
-            id="vacate-btn"
-            class="hidden px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-medium text-sm transition cursor-pointer"
-          >
-            Clear / Vacate Bed
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-  <script>lucide.createIcons();</script>
-</body>
-</html>
+    /* Modal Overlay */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(9, 9, 11, 0.65);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: #FFF;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #F4F4F5;
+    }
+    .btn-close {
+      background: #F4F4F5; border: none;
+      width: 32px; height: 32px; border-radius: 10px;
+      font-weight: 700; cursor: pointer;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
