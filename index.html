@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,22 +16,22 @@ html
       background-color: #F4F4F5;
       color: #18181B;
       line-height: 1.45;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
 
-    /* Navbar */
+    /* Top Navbar */
     .navbar {
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid #E4E4E7;
-      padding: 14px 20px;
     }
     .nav-inner {
-      max-width: 1280px;
+      max-width: 1100px;
       margin: 0 auto;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -45,98 +44,80 @@ html
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 15px;
     }
-    .brand-title { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
-    .brand-sub { font-size: 11px; color: #71717A; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .brand-title { font-weight: 700; font-size: 17px; letter-spacing: -0.02em; }
+    .brand-sub { font-size: 10px; color: #71717A; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
     .btn-lock {
       background: #F4F4F5; color: #3F3F46;
       border: 1px solid #E4E4E7;
-      padding: 8px 14px; border-radius: 10px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
+      padding: 7px 12px; border-radius: 10px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
     }
     .btn-lock:hover { background: #E4E4E7; color: #18181B; }
 
-    /* Main Container */
-    .container { max-width: 1280px; margin: 0 auto; padding: 24px 16px; }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .stat-card {
+    /* Room Navigation Tabs */
+    .room-tabs-bar {
       background: #FFF;
-      border: 1px solid #E4E4E7;
-      border-radius: 18px;
-      padding: 16px;
+      border-bottom: 1px solid #E4E4E7;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .stat-card.green { background: #ECFDF5; border-color: #A7F3D0; }
-    .stat-card.amber { background: #FFFBEB; border-color: #FDE68A; }
-    .stat-label { font-size: 12px; font-weight: 600; color: #71717A; }
-    .stat-card.green .stat-label { color: #065F46; }
-    .stat-card.amber .stat-label { color: #92400E; }
-    .stat-value { font-size: 26px; font-weight: 800; margin-top: 2px; letter-spacing: -0.02em; }
-    .stat-card.green .stat-value { color: #047857; }
-    .stat-card.amber .stat-value { color: #B45309; }
-    .stat-sub { font-size: 11px; color: #71717A; }
-
-    /* Toolbar */
-    .toolbar {
-      background: #FFF;
-      border: 1px solid #E4E4E7;
-      border-radius: 16px;
-      padding: 12px;
+    .room-tabs-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8px 16px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
+      gap: 8px;
     }
-    .search-input {
-      flex: 1;
-      min-width: 200px;
-      padding: 10px 14px;
-      border: 1px solid #E4E4E7;
-      border-radius: 10px;
-      font-size: 14px;
-      background: #FAFAFA;
-    }
-    .search-input:focus { outline: none; border-color: #18181B; background: #FFF; }
-    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
-    .filter-btn {
-      padding: 8px 13px;
-      border-radius: 10px;
-      border: none;
-      font-size: 12px;
+    .room-tab {
+      padding: 9px 15px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: #F4F4F5;
+      color: #52525B;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      background: #F4F4F5;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .room-tab:hover { background: #E4E4E7; color: #18181B; }
+    .room-tab.active {
+      background: #18181B;
+      color: #FFF;
+    }
+    .tab-pill {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.2);
+    }
+    .room-tab:not(.active) .tab-pill {
+      background: #E4E4E7;
       color: #3F3F46;
     }
-    .filter-btn.active { background: #18181B; color: #FFF; }
 
-    /* 3 Rooms Grid */
-    .rooms-grid {
+    /* Main Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 20px 16px; }
+
+    /* Overview Cards */
+    .overview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
     }
-    .room-card {
+    .overview-room-card {
       background: #FFF;
       border: 1px solid #E4E4E7;
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    }
-    .room-header {
+      border-radius: 20px;
+      padding: 20px;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: flex-start;
-      padding-bottom: 14px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #F4F4F5;
+      gap: 16px;
     }
     .room-badge {
       display: inline-block;
@@ -149,71 +130,116 @@ html
     }
     .room-badge.male { background: #EFF6FF; color: #1D4ED8; }
     .room-badge.female { background: #FFF1F2; color: #BE123C; }
-    .room-title { font-size: 18px; font-weight: 700; margin-top: 6px; }
-    .room-count { text-align: right; }
-    .room-count strong { font-size: 18px; color: #059669; display: block; }
-    .room-count span { font-size: 10px; text-transform: uppercase; color: #71717A; font-weight: 700; }
+    .btn-open-room {
+      width: 100%;
+      padding: 11px;
+      border-radius: 12px;
+      border: none;
+      background: #18181B;
+      color: #FFF;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-open-room:hover { background: #27272A; }
 
-    /* Double-Deck Bunk Bed Drawing Frame */
-    .decks-wrapper {
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .stat-card {
+      background: #FFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .stat-card.green { background: #ECFDF5; border-color: #A7F3D0; }
+    .stat-card.amber { background: #FFFBEB; border-color: #FDE68A; }
+    .stat-label { font-size: 11px; font-weight: 700; color: #71717A; text-transform: uppercase; }
+    .stat-card.green .stat-label { color: #065F46; }
+    .stat-card.amber .stat-label { color: #92400E; }
+    .stat-value { font-size: 24px; font-weight: 800; margin-top: 2px; }
+    .stat-card.green .stat-value { color: #047857; }
+    .stat-card.amber .stat-value { color: #B45309; }
+
+    /* Room Page Header */
+    .page-header {
+      background: #FFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
       display: flex;
-      flex-direction: column;
-      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .page-title { font-size: 22px; font-weight: 800; margin-top: 4px; }
+
+    /* 4 Double-Deck Bunks Grid (2x2 on Desktop, 1 column on Phone) */
+    .decks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
     }
     .bunk-frame {
       position: relative;
-      border-left: 5px solid #3F3F46;
-      border-right: 5px solid #3F3F46;
-      border-top: 4px solid #3F3F46;
-      border-radius: 10px 10px 2px 2px;
-      padding: 8px 8px 10px 8px;
-      background: #FAFAFA;
+      border-left: 6px solid #3F3F46;
+      border-right: 6px solid #3F3F46;
+      border-top: 5px solid #3F3F46;
+      border-radius: 12px 12px 2px 2px;
+      padding: 10px 10px 12px 10px;
+      background: #FFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
     .bunk-frame::before,
     .bunk-frame::after {
       content: "";
       position: absolute;
-      bottom: -8px;
-      width: 5px;
-      height: 8px;
+      bottom: -9px;
+      width: 6px;
+      height: 9px;
       background: #3F3F46;
     }
-    .bunk-frame::before { left: -5px; }
-    .bunk-frame::after { right: -5px; }
+    .bunk-frame::before { left: -6px; }
+    .bunk-frame::after { right: -6px; }
 
     .bunk-frame-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       padding: 0 2px;
     }
     .bunk-frame-label {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #3F3F46;
+      letter-spacing: 0.04em;
+      color: #27272A;
     }
 
-    /* Visual Ladder & Mattress Container */
     .bunk-structure {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: stretch;
     }
     .bunk-ladder {
-      width: 18px;
+      width: 20px;
       flex-shrink: 0;
-      border-left: 2px solid #71717A;
-      border-right: 2px solid #71717A;
+      border-left: 2.5px solid #71717A;
+      border-right: 2.5px solid #71717A;
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
       padding: 4px 0;
     }
     .ladder-rung {
-      height: 2px;
+      height: 2.5px;
       background: #71717A;
       width: 100%;
     }
@@ -221,7 +247,7 @@ html
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       min-width: 0;
     }
     .bunk-divider {
@@ -230,31 +256,26 @@ html
       border-radius: 2px;
     }
 
-    /* Individual Bed Mattress Slot */
-    .bed-slot {
-      width: 100%;
-      text-align: left;
-      padding: 10px 12px;
-      border-radius: 10px;
+    /* Individual Bunk Bed Card */
+    .bed-card {
+      padding: 12px;
+      border-radius: 12px;
       border: 1.5px solid #D4D4D8;
       border-bottom: 4px solid #A1A1AA;
-      background: #FFF;
-      cursor: pointer;
-      transition: transform 0.1s, border-color 0.15s;
-      display: block;
+      background: #FAFAFA;
+      transition: border-color 0.15s;
     }
-    .bed-slot:hover { border-color: #18181B; }
-    .bed-slot.vacant {
+    .bed-card.vacant {
       background: #ECFDF5;
       border-color: #6EE7B7;
       border-bottom-color: #10B981;
     }
-    .bed-slot.expiring {
+    .bed-card.expiring {
       background: #FFFBEB;
       border-color: #FCD34D;
       border-bottom-color: #F59E0B;
     }
-    .bed-slot.expired {
+    .bed-card.expired {
       background: #FEF2F2;
       border-color: #FCA5A5;
       border-bottom-color: #EF4444;
@@ -265,67 +286,67 @@ html
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .bed-title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
-      color: #3F3F46;
+      color: #27272A;
     }
     .status-pill {
       font-size: 10px;
       font-weight: 700;
       padding: 2px 8px;
       border-radius: 6px;
-      white-space: nowrap;
-      background: #F4F4F5;
+      background: #E4E4E7;
       color: #3F3F46;
     }
-    .bed-slot.vacant .status-pill { background: #D1FAE5; color: #065F46; }
-    .bed-slot.expiring .status-pill { background: #FEF3C7; color: #92400E; }
-    .bed-slot.expired .status-pill { background: #FEE2E2; color: #991B1B; }
+    .bed-card.vacant .status-pill { background: #D1FAE5; color: #065F46; }
+    .bed-card.expiring .status-pill { background: #FEF3C7; color: #92400E; }
+    .bed-card.expired .status-pill { background: #FEE2E2; color: #991B1B; }
 
-    /* Structured Info Rows Inside Each Bed */
     .bed-details {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      font-size: 12px;
+      gap: 3px;
+      font-size: 13px;
+      margin-bottom: 10px;
     }
-    .bed-row {
+    .bed-row { display: flex; gap: 6px; align-items: baseline; }
+    .bed-key { font-weight: 700; color: #71717A; font-size: 11px; flex-shrink: 0; }
+    .bed-val { font-weight: 600; color: #18181B; word-break: break-word; }
+    .bed-val.remarks { font-weight: 400; color: #52525B; font-style: italic; }
+
+    .bed-actions {
       display: flex;
-      gap: 5px;
-      align-items: baseline;
-      overflow: hidden;
+      gap: 6px;
     }
-    .bed-key {
-      font-weight: 700;
-      color: #71717A;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-    .bed-val {
-      font-weight: 600;
+    .btn-bed {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #D4D4D8;
+      background: #FFF;
       color: #18181B;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
     }
-    .bed-val.remarks {
-      font-weight: 400;
-      color: #52525B;
-      font-style: italic;
+    .btn-bed:hover { background: #F4F4F5; }
+    .btn-bed.assign {
+      background: #059669;
+      border-color: #059669;
+      color: #FFF;
     }
-    .bed-vacant-cta {
-      font-size: 12px;
-      font-weight: 600;
-      color: #047857;
-      padding: 4px 0 2px 0;
+    .btn-bed.cal {
+      background: #EFF6FF;
+      border-color: #BFDBFE;
+      color: #1D4ED8;
     }
 
-    /* Modal Overlay */
+    /* Modal */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -355,18 +376,3 @@ html
       border-bottom: 1px solid #F4F4F5;
     }
     .btn-close {
-      background: #F4F4F5; border: none;
-      width: 32px; height: 32px; border-radius: 10px;
-      font-weight: 700; cursor: pointer;
-    }
-    .form-group { margin-bottom: 14px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .form-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: #71717A;
-      margin-bottom: 5px;
-      letter-spacing: 0.04em;
-    }
