@@ -1,11 +1,9 @@
-// Owner Credentials
 const OWNER_ACCOUNT = {
   email: 'owner@angelesinn.ph',
   password: 'angeles2026',
   name: 'Angeles Inn Owner'
 };
 
-// 3 Rooms Configuration (Each has 4 Double-Deck Bunks = 8 Beds per room)
 const ROOMS = [
   {
     id: 'room-non-ac',
@@ -44,10 +42,10 @@ if (loginForm) {
     window.location.replace('index.html');
   }
 
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim().toLowerCase();
-    const password = document.getElementById('password').value;
+    const password = document.getElementById('password').value.trim();
 
     if (email === OWNER_ACCOUNT.email && password === OWNER_ACCOUNT.password) {
       sessionStorage.setItem('angeles_owner', JSON.stringify(OWNER_ACCOUNT));
@@ -64,7 +62,6 @@ if (roomsContainer) {
   let currentFilter = 'all';
   let searchQuery = '';
 
-  // Load saved bed assignments from localStorage
   function getBedData() {
     return JSON.parse(localStorage.getItem('angeles_beds') || '{}');
   }
@@ -73,7 +70,6 @@ if (roomsContainer) {
     localStorage.setItem('angeles_beds', JSON.stringify(data));
   }
 
-  // Calculate days left until end of rent
   function getRentStatus(endDateStr) {
     if (!endDateStr) return { status: 'vacant', label: 'Vacant', daysLeft: null };
     const today = new Date();
@@ -107,7 +103,7 @@ if (roomsContainer) {
     roomsContainer.innerHTML = ROOMS.map(room => {
       let roomVacantCount = 0;
 
-      const bunksHTML = BUNK_SLOTS.map((slot, index) => {
+      const bunksHTML = BUNK_SLOTS.map(slot => {
         const bedId = `${room.id}-b${slot.deck}-${slot.pos.toLowerCase()}`;
         const occupant = bedData[bedId];
         const rentInfo = occupant ? getRentStatus(occupant.endDate) : { status: 'vacant' };
@@ -122,12 +118,10 @@ if (roomsContainer) {
           }
         }
 
-        // Apply Search & Filter
         if (currentFilter === 'vacant' && occupant) return '';
         if (currentFilter === 'expiring' && (!occupant || rentInfo.status === 'active')) return '';
         if (searchQuery && (!occupant || !occupant.guestName.toLowerCase().includes(searchQuery))) return '';
 
-        // Card styling based on occupancy & rent end date
         let cardStyle = 'bg-emerald-50/50 border-emerald-200/80 hover:border-emerald-400';
         let badgeHTML = `<span class="text-[11px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">Available</span>`;
 
@@ -197,10 +191,9 @@ if (roomsContainer) {
     document.getElementById('stat-vacant').textContent = totalVacant;
     document.getElementById('stat-occupied').textContent = totalOccupied;
     document.getElementById('stat-expiring').textContent = totalExpiring;
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
   }
 
-  // Modal Controls
   const modal = document.getElementById('bunk-modal');
   const bunkForm = document.getElementById('bunk-form');
   const vacateBtn = document.getElementById('vacate-btn');
@@ -222,18 +215,18 @@ if (roomsContainer) {
     } else {
       bunkForm.reset();
       document.getElementById('modal-bed-id').value = bedId;
-      document.getElementById('start-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('start-date').value = new Date().toISOString().split('T');
       vacateBtn.classList.add('hidden');
     }
 
     modal.classList.remove('hidden');
   };
 
-  document.getElementById('close-modal').addEventListener('click', () => {
+  document.getElementById('close-modal').addEventListener('click', function () {
     modal.classList.add('hidden');
   });
 
-  bunkForm.addEventListener('submit', (e) => {
+  bunkForm.addEventListener('submit', function (e) {
     e.preventDefault();
     const bedId = document.getElementById('modal-bed-id').value;
     const bedData = getBedData();
@@ -250,5 +243,17 @@ if (roomsContainer) {
     renderBoard();
   });
 
-  vacateBtn.addEventListener('click', () => {
+  vacateBtn.addEventListener('click', function () {
     const bedId = document.getElementById('modal-bed-id').value;
+    const bedData = getBedData();
+    delete bedData[bedId];
+    saveBedData(bedData);
+    modal.classList.add('hidden');
+    renderBoard();
+  });
+
+  document.getElementById('search-guest').addEventListener('input', function (e) {
+    searchQuery = e.target.value.trim().toLowerCase();
+    renderBoard();
+  });
+
