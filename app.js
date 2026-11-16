@@ -67,7 +67,9 @@ window.openBedModal = function (bedId, roomName, bunkTitle) {
   modal.classList.add('open');
 };
 
-document.getElementById('close-modal').addEventListener('click', function () { modal.classList.remove('open'); });
+document.getElementById('close-modal').addEventListener('click', function () {
+  modal.classList.remove('open');
+});
 
 bunkForm.addEventListener('submit', function (e) {
   e.preventDefault();
