@@ -395,11 +395,11 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
 
 initFirebase();
 
-onAuthStateChanged(firebaseAuth, async (user) => {
+onAuthStateChanged(firebaseAuth, (user) => {
   if (!user) {
-    window.location.href = 'login.html';
+    window.location.replace('login.html');
     return;
   }
-  window.__currentBedData = await loadBedData();
+
   renderApp();
 });
