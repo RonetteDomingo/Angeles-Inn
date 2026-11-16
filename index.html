@@ -96,3 +96,167 @@
     .ladder-rung { height: 2.5px; background: #71717A; width: 100%; }
     .bunk-tiers { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
     .bunk-divider { height: 3px; background: #52525B; border-radius: 2px; }
+    .bed-card { padding: 12px; border-radius: 12px; border: 1.5px solid #D4D4D8; border-bottom: 4px solid #A1A1AA; background: #FAFAFA; }
+    .bed-card.vacant { background: #ECFDF5; border-color: #6EE7B7; border-bottom-color: #10B981; }
+    .bed-card.expiring { background: #FFFBEB; border-color: #FCD34D; border-bottom-color: #F59E0B; }
+    .bed-card.expired { background: #FEF2F2; border-color: #FCA5A5; border-bottom-color: #EF4444; }
+    .bed-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
+    .bed-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: #27272A; }
+    .status-pill { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #E4E4E7; color: #3F3F46; }
+    .bed-card.vacant .status-pill { background: #D1FAE5; color: #065F46; }
+    .bed-card.expiring .status-pill { background: #FEF3C7; color: #92400E; }
+    .bed-card.expired .status-pill { background: #FEE2E2; color: #991B1B; }
+    .bed-details { display: flex; flex-direction: column; gap: 3px; font-size: 13px; margin-bottom: 10px; }
+    .bed-row { display: flex; gap: 6px; align-items: baseline; }
+    .bed-key { font-weight: 700; color: #71717A; font-size: 11px; flex-shrink: 0; }
+    .bed-val { font-weight: 600; color: #18181B; word-break: break-word; }
+    .bed-val.remarks { font-weight: 400; color: #52525B; font-style: italic; }
+    .bed-actions { display: flex; gap: 6px; }
+    .btn-bed { flex: 1; padding: 7px 10px; border-radius: 8px; border: 1px solid #D4D4D8; background: #FFF; color: #18181B; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; }
+    .btn-bed.assign { background: #059669; border-color: #059669; color: #FFF; }
+    .btn-bed.cal { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; }
+    .modal-backdrop { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(9, 9, 11, 0.65); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px; }
+    .modal-backdrop.open { display: flex; }
+    .modal-box { background: #FFF; width: 100%; max-width: 440px; border-radius: 24px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .modal-top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 1px solid #F4F4F5; }
+    .btn-close { background: #F4F4F5; border: none; width: 32px; height: 32px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    .form-group { margin-bottom: 14px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #71717A; margin-bottom: 5px; }
+    .form-input { width: 100%; padding: 11px 12px; border: 1px solid #D4D4D8; border-radius: 12px; font-size: 15px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .btn-save { flex: 1; background: #18181B; color: #FFF; border: none; padding: 13px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; }
+    .btn-vacate { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 13px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; display: none; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="brand-icon">AI</div>
+        <div>
+          <div class="brand-title">Angeles Inn</div>
+          <div class="brand-sub">Owner Bed-Space Portal</div>
+        </div>
+      </div>
+      <button id="logout-btn" class="btn-lock">Lock Portal</button>
+    </div>
+    <div class="room-tabs-bar">
+      <div class="room-tabs-inner" id="room-tabs"></div>
+    </div>
+  </nav>
+
+  <main id="app-content" class="container"></main>
+
+  <div id="bunk-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-top">
+        <div>
+          <div id="modal-room-label" class="brand-sub">Room</div>
+          <h3 id="modal-bunk-title" style="font-size:18px;font-weight:700;">Bunkbed 1 Upper</h3>
+        </div>
+        <button id="close-modal" class="btn-close">✕</button>
+      </div>
+      <form id="bunk-form">
+        <input type="hidden" id="modal-bed-id" />
+        <div class="form-group">
+          <label class="form-label">Name of Guest</label>
+          <input type="text" id="guest-name" class="form-input" required placeholder="e.g. Juan Dela Cruz" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Start Date</label>
+            <input type="date" id="start-date" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Expiration</label>
+            <input type="date" id="end-date" class="form-input" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Remarks</label>
+          <input type="text" id="guest-notes" class="form-input" placeholder="e.g. Paid ₱2,500 / 0917-xxx-xxxx" />
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-save">Save Guest</button>
+          <button type="button" id="vacate-btn" class="btn-vacate">Clear Bed</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    var ROOMS = [
+      { id: 'room-non-ac', shortName: 'Non-Aircon Room', name: 'Room 1: Non-Aircon Room', badge: 'Fan / Natural Ventilation • 8 Beds', badgeClass: '' },
+      { id: 'room-male', shortName: 'Male Room', name: 'Room 2: Male Room', badge: 'Air-Conditioned • Male Only • 8 Beds', badgeClass: 'male' },
+      { id: 'room-female', shortName: 'Female Room', name: 'Room 3: Female Room', badge: 'Air-Conditioned • Female Only • 8 Beds', badgeClass: 'female' }
+    ];
+    var DECK_NUMBERS = new Array(1, 2, 3, 4);
+    var activePage = 'overview';
+
+    function getBedData() { return JSON.parse(localStorage.getItem('angeles_beds') || '{}'); }
+    function saveBedData(data) { localStorage.setItem('angeles_beds', JSON.stringify(data)); }
+
+    function getRentStatus(endDateStr) {
+      if (!endDateStr) return { status: 'vacant', label: 'Available' };
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var end = new Date(endDateStr + 'T00:00:00');
+      var diffDays = Math.ceil((end - today) / 86400000);
+      if (diffDays < 0) return { status: 'expired', label: 'Expired (' + Math.abs(diffDays) + 'd ago)' };
+      if (diffDays === 0) return { status: 'expiring', label: 'Expires Today' };
+      if (diffDays <= 3) return { status: 'expiring', label: 'Expires in ' + diffDays + 'd' };
+      return { status: 'active', label: diffDays + 'd left' };
+    }
+
+    function formatDateDisplay(dateStr) {
+      if (!dateStr) return '—';
+      var date = new Date(dateStr + 'T00:00:00');
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    window.syncToCalendar = function (bedId, roomName, bunkLabel) {
+      var bedData = getBedData();
+      var occ = bedData[bedId];
+      if (!occ || !occ.endDate) return;
+      var cleanDate = occ.endDate.replace(/-/g, '');
+      var title = 'Rent Expiration: ' + occ.guestName + ' (' + roomName + ' - ' + bunkLabel + ')';
+      var desc = 'Guest: ' + occ.guestName + ' | Room: ' + roomName + ' (' + bunkLabel + ') | Remarks: ' + (occ.notes || 'None');
+      var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:' + cleanDate + '\r\nDTEND;VALUE=DATE:' + cleanDate + '\r\nSUMMARY:' + title + '\r\nDESCRIPTION:' + desc + '\r\nEND:VEVENT\r\nEND:VCALENDAR';
+      var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'AngelesInn-' + occ.guestName.replace(/\s+/g, '_') + '-Expiry.ics';
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    };
+
+    function getRoomStats(roomId, bedData) {
+      var vacant = 0, occupied = 0, expiring = 0;
+      DECK_NUMBERS.forEach(function (d) {
+        new Array('upper', 'lower').forEach(function (pos) {
+          var occ = bedData[roomId + '-b' + d + '-' + pos];
+          if (!occ) { vacant++; } else {
+            occupied++;
+            var st = getRentStatus(occ.endDate).status;
+            if (st === 'expired' || st === 'expiring') expiring++;
+          }
+        });
+      });
+      return { vacant: vacant, occupied: occupied, expiring: expiring };
+    }
+
+    function renderTabs(bedData) {
+      var html = '<button class="room-tab ' + (activePage === 'overview' ? 'active' : '') + '" onclick="switchPage(\'overview\')">All Rooms Overview</button>';
+      ROOMS.forEach(function (room) {
+        var stats = getRoomStats(room.id, bedData);
+        html += '<button class="room-tab ' + (activePage === room.id ? 'active' : '') + '" onclick="switchPage(\'' + room.id + '\')">' + room.shortName + ' <span class="tab-pill">' + stats.vacant + '/8 open</span></button>';
+      });
+      document.getElementById('room-tabs').innerHTML = html;
+    }
+
+    window.switchPage = function (pageId) { activePage = pageId; window.scrollTo(0, 0); renderApp(); };
+
+    function renderOverviewPage(bedData) {
+      var tv = 0, to = 0, te = 0;
+      var cards = ROOMS.map(function (room) {
+        var s = getRoomStats(room.id, bedData);
+        tv += s.vacant; to += s.occupied; te += s.expiring;
