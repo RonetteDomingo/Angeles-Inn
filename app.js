@@ -1,3 +1,18 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 var ROOMS = [
   { id: 'male-aircon', name: 'Male Aircon Room', badge: 'MALE', badgeClass: 'male', bunkCount: 4 },
   { id: 'female-aircon', name: 'Female Aircon Room', badge: 'FEMALE', badgeClass: 'female', bunkCount: 4 },
@@ -12,61 +27,61 @@ var firebaseDb;
 
 function initFirebase() {
   const firebaseConfig = {
-  apiKey: "AIzaSyAt9RTexlZSOzJM5pmtTNvKgoU51b0SemQ",
-  authDomain: "angeles-transient-inn.firebaseapp.com",
-  projectId: "angeles-transient-inn",
-  storageBucket: "angeles-transient-inn.firebasestorage.app",
-  messagingSenderId: "8173451713",
-  appId: "1:8173451713:web:b03e7ace87dc2626aa9740",
-  measurementId: "G-0WTP5Z3EPR"
-};
+    apiKey: "AIzaSyAt9RTexlZSOzJM5pmtTNvKgoU51b0SemQ",
+    authDomain: "angeles-transient-inn.firebaseapp.com",
+    projectId: "angeles-transient-inn",
+    storageBucket: "angeles-transient-inn.firebasestorage.app",
+    messagingSenderId: "8173451713",
+    appId: "1:8173451713:web:b03e7ace87dc2626aa9740",
+    measurementId: "G-0WTP5Z3EPR"
+  };
 
   firebaseApp = initializeApp(firebaseConfig);
   firebaseAuth = getAuth(firebaseApp);
   firebaseDb = getFirestore(firebaseApp);
 }
 
-async function getCurrentOwnerUid() {
-  const user = firebaseAuth.currentUser;
-  if (!user) return null;
-  return user.uid;
-}
-
 function getBedAssignmentsPath() {
+  if (!firebaseAuth.currentUser) return null;
   return `users/${firebaseAuth.currentUser.uid}/bed_assignments`;
 }
 
 async function loadBedData() {
   if (!firebaseAuth.currentUser) return {};
-  const q = collection(firebaseDb, getBedAssignmentsPath());
+  const path = getBedAssignmentsPath();
+  if (!path) return {};
+
+  const q = collection(firebaseDb, path);
   const snapshot = await getDocs(q);
+
   const result = {};
-  snapshot.forEach((doc) => {
-    result[doc.id] = doc.data();
+  snapshot.forEach((docSnap) => {
+    result[docSnap.id] = docSnap.data();
   });
   return result;
 }
 
 async function saveBedData(data) {
   if (!firebaseAuth.currentUser) return;
-  const path = getBedAssignmentsPath();
-  const promises = [];
 
-  Object.keys(data).forEach((bedId) => {
-    if (data[bedId] && data[bedId].guestName) {
-      const ref = doc(firebaseDb, path, bedId);
-      promises.push(setDoc(ref, {
-        bedId: bedId,
+  const path = getBedAssignmentsPath();
+  if (!path) return;
+
+  const promises = Object.entries(data).map(([bedId, guest]) => {
+    const ref = doc(firebaseDb, path, bedId);
+
+    if (guest && guest.guestName) {
+      return setDoc(ref, {
+        bedId,
         roomId: bedId.split('-bunk-')[0],
-        guestName: data[bedId].guestName,
-        checkIn: data[bedId].startDate,
-        checkOut: data[bedId].endDate,
-        remarks: data[bedId].notes || ''
-      }));
-    } else {
-      const ref = doc(firebaseDb, path, bedId);
-      promises.push(deleteDoc(ref));
+        guestName: guest.guestName,
+        checkIn: guest.checkIn || '',
+        checkOut: guest.checkOut || '',
+        remarks: guest.remarks || ''
+      });
     }
+
+    return deleteDoc(ref);
   });
 
   await Promise.all(promises);
@@ -83,7 +98,7 @@ function getBedStatus(guest) {
   if (!guest.checkOut) return 'occupied';
 
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   const end = new Date(guest.checkOut + 'T00:00:00');
   const daysLeft = Math.ceil((end - today) / 86400000);
@@ -252,7 +267,6 @@ async function renderApp() {
       container.innerHTML = renderOverviewPage(bedData);
     } else {
       const room = ROOMS.find((item) => item.id === activePage);
-
       if (!room) {
         activePage = 'overview';
         container.innerHTML = renderOverviewPage(bedData);
@@ -262,8 +276,7 @@ async function renderApp() {
     }
   } catch (error) {
     console.error('Could not load the app:', error);
-    container.textContent =
-      `Could not load room data: ${error.code || error.message || 'Unknown error'}`;
+    container.textContent = `Could not load room data: ${error.code || error.message || 'Unknown error'}`;
   }
 }
 
@@ -286,9 +299,9 @@ function openBedModal(bedId, roomName, bunkTitle) {
   document.getElementById('modal-bunk-title').textContent = bunkTitle;
 
   document.getElementById('guest-name').value = guest ? guest.guestName || '' : '';
-  document.getElementById('start-date').value = guest ? guest.startDate || '' : new Date().toISOString().slice(0, 10);
-  document.getElementById('end-date').value = guest ? guest.endDate || '' : '';
-  document.getElementById('guest-notes').value = guest ? guest.notes || '' : '';
+  document.getElementById('start-date').value = guest ? guest.checkIn || '' : new Date().toISOString().slice(0, 10);
+  document.getElementById('end-date').value = guest ? guest.checkOut || '' : '';
+  document.getElementById('guest-notes').value = guest ? guest.remarks || '' : '';
 
   if (vacateBtn) vacateBtn.style.display = guest ? 'block' : 'none';
 
@@ -355,6 +368,7 @@ if (bunkForm) {
     const endDate = document.getElementById('end-date').value;
 
     if (!bedId || !guestName || !startDate || !endDate) return;
+
     if (endDate < startDate) {
       alert('Check-out date must be on or after the check-in date.');
       return;
@@ -363,9 +377,9 @@ if (bunkForm) {
     const data = await loadBedData();
     data[bedId] = {
       guestName,
-      startDate,
-      endDate,
-      notes: document.getElementById('guest-notes').value.trim()
+      checkIn: startDate,
+      checkOut: endDate,
+      remarks: document.getElementById('guest-notes').value.trim()
     };
 
     await saveBedData(data);
