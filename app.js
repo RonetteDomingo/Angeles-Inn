@@ -12,13 +12,14 @@ var firebaseDb;
 
 function initFirebase() {
   const firebaseConfig = {
-    apiKey: "PASTE_YOUR_API_KEY",
-    authDomain: "angeles-transient-inn.firebaseapp.com",
-    projectId: "angeles-transient-inn",
-    storageBucket: "angeles-transient-inn.appspot.com",
-    messagingSenderId: "PASTE_YOUR_SENDER_ID",
-    appId: "PASTE_YOUR_APP_ID"
-  };
+  apiKey: "AIzaSyAt9RTexlZSOzJM5pmtTNvKgoU51b0SemQ",
+  authDomain: "angeles-transient-inn.firebaseapp.com",
+  projectId: "angeles-transient-inn",
+  storageBucket: "angeles-transient-inn.firebasestorage.app",
+  messagingSenderId: "8173451713",
+  appId: "1:8173451713:web:b03e7ace87dc2626aa9740",
+  measurementId: "G-0WTP5Z3EPR"
+};
 
   firebaseApp = initializeApp(firebaseConfig);
   firebaseAuth = getAuth(firebaseApp);
