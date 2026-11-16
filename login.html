@@ -78,9 +78,13 @@
       font-size: 13px;
     }
 
-    .login-error.visible { display: block; }
+    .login-error.visible {
+      display: block;
+    }
 
-    .login-form .form-group { margin-bottom: 18px; }
+    .login-form .form-group {
+      margin-bottom: 18px;
+    }
 
     .login-form .form-label {
       color: #52525B;
@@ -111,8 +115,13 @@
       transition: background 150ms ease, transform 150ms ease;
     }
 
-    .login-submit:hover { background: #3F3F46; }
-    .login-submit:active { transform: translateY(1px); }
+    .login-submit:hover {
+      background: #3F3F46;
+    }
+
+    .login-submit:active {
+      transform: translateY(1px);
+    }
 
     .login-footer {
       padding-top: 18px;
@@ -124,8 +133,13 @@
     }
 
     @media (max-width: 480px) {
-      body.login-page { padding: 16px; }
-      .login-card { border-radius: 20px; }
+      body.login-page {
+        padding: 16px;
+      }
+
+      .login-card {
+        border-radius: 20px;
+      }
     }
   </style>
 </head>
@@ -148,18 +162,36 @@
     <form id="login-form" class="login-form">
       <div class="form-group">
         <label class="form-label" for="email">Owner email</label>
-        <input type="email" id="email" class="form-input" required autocomplete="username" placeholder="owner@example.com" />
+        <input
+          type="email"
+          id="email"
+          class="form-input"
+          required
+          autocomplete="username"
+          placeholder="owner@angelesinn.ph"
+        />
       </div>
 
       <div class="form-group">
         <label class="form-label" for="password">Password</label>
-        <input type="password" id="password" class="form-input" required autocomplete="current-password" placeholder="Enter your password" />
+        <input
+          type="password"
+          id="password"
+          class="form-input"
+          required
+          autocomplete="current-password"
+          placeholder="Enter your password"
+        />
       </div>
 
-      <button type="submit" class="login-submit">Sign in to the portal <span aria-hidden="true">→</span></button>
+      <button type="submit" class="login-submit">
+        Sign in to the portal <span aria-hidden="true">→</span>
+      </button>
     </form>
 
-    <footer class="login-footer">Angeles Inn · Guest and room management</footer>
+    <footer class="login-footer">
+      Angeles Inn · Guest and room management
+    </footer>
   </main>
 
   <script>
@@ -171,13 +203,12 @@
       event.preventDefault();
       var email = document.getElementById('email').value.trim().toLowerCase();
       var password = document.getElementById('password').value;
-      var error = document.getElementById('login-error');
 
       if (email === 'owner@angelesinn.ph' && password === 'angeles2026') {
         sessionStorage.setItem('angeles_owner', JSON.stringify({ email: email, name: 'Angeles Inn Owner' }));
         window.location.href = 'index.html';
       } else {
-        error.classList.add('visible');
+        document.getElementById('login-error').classList.add('visible');
         document.getElementById('password').focus();
       }
     });
