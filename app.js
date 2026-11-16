@@ -237,23 +237,33 @@ function renderOverviewPage(bedData) {
 }
 
 async function renderApp() {
-  const bedData = await loadBedData();
   const container = document.getElementById('app-content');
-
   if (!container) return;
 
-  renderTabs(bedData);
+  container.textContent = 'Loading rooms…';
 
-  if (activePage === 'overview') {
-    container.innerHTML = renderOverviewPage(bedData);
-  } else {
-    const room = ROOMS.find((item) => item.id === activePage);
-    if (!room) {
-      activePage = 'overview';
+  try {
+    const bedData = await loadBedData();
+    window.__currentBedData = bedData;
+
+    renderTabs(bedData);
+
+    if (activePage === 'overview') {
       container.innerHTML = renderOverviewPage(bedData);
-      return;
+    } else {
+      const room = ROOMS.find((item) => item.id === activePage);
+
+      if (!room) {
+        activePage = 'overview';
+        container.innerHTML = renderOverviewPage(bedData);
+      } else {
+        container.innerHTML = renderRoomPage(room, bedData);
+      }
     }
-    container.innerHTML = renderRoomPage(room, bedData);
+  } catch (error) {
+    console.error('Could not load the app:', error);
+    container.textContent =
+      `Could not load room data: ${error.code || error.message || 'Unknown error'}`;
   }
 }
 
