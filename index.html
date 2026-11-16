@@ -39,26 +39,31 @@
         </div>
         <button id="close-modal" class="btn-close">✕</button>
       </div>
+
       <form id="bunk-form">
         <input type="hidden" id="modal-bed-id" />
+
         <div class="form-group">
           <label class="form-label">Name of Guest</label>
           <input type="text" id="guest-name" class="form-input" required placeholder="e.g. Juan Dela Cruz" />
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Start Date</label>
+            <label class="form-label">Check-in Date</label>
             <input type="date" id="start-date" class="form-input" required />
           </div>
           <div class="form-group">
-            <label class="form-label">Date of Expiration</label>
+            <label class="form-label">Check-out Date</label>
             <input type="date" id="end-date" class="form-input" required />
           </div>
         </div>
+
         <div class="form-group">
           <label class="form-label">Remarks</label>
           <input type="text" id="guest-notes" class="form-input" placeholder="e.g. Paid ₱2,500 / 0917-xxx-xxxx" />
         </div>
+
         <div class="modal-actions">
           <button type="submit" class="btn-save">Save Guest</button>
           <button type="button" id="vacate-btn" class="btn-vacate">Clear Bed</button>
@@ -67,6 +72,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script defer src="app.js"></script>
 </body>
 </html>
