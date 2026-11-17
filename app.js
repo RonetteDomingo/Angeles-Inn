@@ -394,11 +394,17 @@ if (vacateBtn) {
     const bedId = document.getElementById('modal-bed-id').value;
     if (!bedId) return;
 
-    const data = await loadBedData();
-    delete data[bedId];
-    await saveBedData(data);
-    closeBedModal();
-    renderApp();
+    const path = getBedAssignmentsPath();
+    if (!path) return;
+
+    try {
+      await deleteDoc(doc(firebaseDb, path, bedId));
+      closeBedModal();
+      await renderApp();
+    } catch (error) {
+      console.error('Could not clear bed:', error);
+      alert(`Could not clear bed: ${error.code || error.message || 'Unknown error'}`);
+    }
   });
 }
 
